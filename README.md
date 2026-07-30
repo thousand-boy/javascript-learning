@@ -22,9 +22,10 @@ JavaScript の学習記録リポジトリです。HTML & CSS 学習（`html-css-
 | 2026-07-16〜19 | 第1章 最初に知っておこう！JavaScriptでできること（JavaScriptとは：ブラウザーで動く言語・HTML/CSS/JSの役割分担／できること：HTML・CSSのリアルタイム書き換え・テキスト/画像/色の変更・ユーザーアクション対応・フォームバリデーション／実例サイト：ACES・ShiobaLove・Sustainable PRODUCTS・snaq.me） | notes/2026-07-16_19.md |
 | 2026-07-16〜19 | 第2章 JavaScriptに触れてみよう！2-1〜2-5（書く場所：`<script>`・外部.js・src読み込み／環境構築：VSCode導入・日本語化／初コード：`window.alert()`・.jsファイル作成・window.省略／基本ルール：オブジェクト.メソッド('パラメーター')・半角/大小区別/引用符/セミコロン・エスケープ表記／コンソール：DevTools・`console.log()`・エラー確認） | notes/2026-07-16_19.md ／ chapter2/ |
 | 2026-07-16〜19 | 第3章 JavaScriptの基本を学ぼう！3-1〜3-9（カラーピッカー制作）（完成形の把握／必要ファイル準備：`<input type="color">`・link・`<script defer>`・非同期処理／要素取得：`document.querySelector('#id')`・null・`.value`／テキスト変更：`textContent`・`=`代入・innerHTML／DOM：Document Object Model・DOMツリー・ノード・親子兄弟／テンプレート文字列：`` `...${}` ``・`+`連結／定数：`const`・命名ルール・予約語／イベント：`addEventListener('input', ...)`／関数：アロー関数`() => {}`・function・無名関数） | notes/2026-07-16_19.md ／ chapter3/ |
+| 2026-07-21〜30 | 第4章 イベントで操作しよう！4-1〜4-16（5つの実装課題）（イベントの仕組み：登録→監視→検知→呼び出しの4段階・よく使うイベント20種／①ローディング画面：`load`・`classList.add/remove`・`inset: 0`・`opacity`＋`visibility`／②ダークモード：`click`・`classList.toggle`・`document.body`・`textContent`＋`if/else`／③文字数カウンター：`keyup`・`要素.value`・`.length`・サロゲートペア・比較演算子6種／④チェックで有効化：`change`・`要素.checked`・真偽値(true/false)・`disabled`・論理否定`!`／⑤プログレスバー：実装の5ステップ・`window.scrollY`・`scrollHeight`／`clientHeight`・算術演算子6種・`style.width`） | notes/2026-07-21_30.md ／ chapter4/ |
 
 > 第1章はJavaScriptの「全体像」と「使われ方」を学ぶ概念中心の章のため、コードファイルはなし（コーディングは第2章以降）。
-> 章タブ構成は「Introduction｜Getting Started｜Basic｜Event｜Data｜Animation｜Website｜Troubleshooting」の全8章。第1章＝Introduction、第2章＝Getting Started。
+> 章タブ構成は「Introduction｜Getting Started｜Basic｜Event｜Data｜Animation｜Website｜Troubleshooting」の全8章。第1章＝Introduction、第2章＝Getting Started、第3章＝Basic、第4章＝Event。
 
 ---
 
@@ -288,6 +289,279 @@ color.addEventListener('input', () => {
 
 ---
 
+### 第4章 イベントで操作しよう！（章タブ＝Event）
+
+> 第4章は「よく見かけるイベント」を題材に **5つの小さな実装課題** を作りながらイベントの扱いを身につける実践パート。4-1でイベントの仕組みを学び、以降は ①ローディング画面（4-2〜4-3）／②ダークモード切替（4-4〜4-6）／③文字数カウンター（4-7〜4-9）／④チェックで有効化（4-10〜4-12）／⑤スクロールのプログレスバー（4-13〜4-16）を制作する。全課題に共通する型は **「CSSにクラスや状態を用意しておき、JSはイベントに応じてその切り替えだけを担当する」** という役割分担。前章の「完成形を先に見せてから組み上げる」構成も引き継がれている。
+
+#### 4-1 イベントとは？
+- **イベント＝ユーザーの操作に応じて動作を起こすきっかけ**（P.074「3-8」で既習）。ブラウザーではクリック・キーボード操作・スクロール・ページ読み込みなど様々なタイミングで発生し、JSには **あらかじめ用意した処理をイベント発生時に呼び出す仕組み** が備わっている。
+- **イベントの仕組み（4段階）**：
+
+| 段階 | 内容 |
+|---|---|
+| ① 処理の登録をする | 「何が」「どうなったら」「どうなるか」を指定。`btn.addEventListener('click', message);` ＝ ボタンが／クリックされたら／メッセージを表示する。**この時点では実行されず「予約」されている** |
+| ② ブラウザーがイベントの発生を監視する | ブラウザーは常にイベントが発生しないか監視している |
+| ③ イベントの発生を検知する | 発生したら「イベント発生！クリックされました！」とプログラムに通知する |
+| ④ 処理を呼び出す | ①で登録しておいた処理が呼び出され実行される |
+
+- **よく利用されるイベントの種類**（20種）：
+
+| イベント名 | 発生するタイミング | イベント名 | 発生するタイミング |
+|---|---|---|---|
+| `load` | スタイルシートや画像など、すべてのリソースの読み込みが完了したとき | `dbclick`（※教材表記） | ダブルクリックされたとき |
+| `submit` / `reset` | フォームが送信されるとき／リセットされるとき | `mousedown` / `mouseup` | マウスのボタンが押されたとき／離されたとき |
+| `resize` / `scroll` | 画面のサイズが変わったとき／スクロールされたとき | `mouseover` / `mouseout` | マウスカーソルが重なったとき／離れたとき |
+| `copy` / `paste` | コピーされたとき／ペーストされたとき | `select` | テキストを選択したとき |
+| `keydown` / `keyup` | キーが押されたとき／離されたとき | `focus` / `blur` | 要素にフォーカスされたとき／はずれたとき |
+| `click` | クリックされたとき | `input` / `change` | 入力されたとき／変化があったとき |
+
+- ⚠️ **表記注意**：ダブルクリックは教材の表では `dbclick` と記載されているが、**正しいDOMイベント名は `dblclick`**（`b` と `c` の間に `l` が入る）。誤記でもエラーにならず「反応しないだけ」なので気づきにくい。→ [Element: dblclick event | MDN](https://developer.mozilla.org/en-US/docs/Web/API/Element/dblclick_event)
+
+#### 4-2〜4-3 ローディング中の画面を作ろう／CSSのクラスを加えよう（`chapter4/02-demo`）
+- **完成イメージ**：ページを開くと **スピナー（ロード中にくるくる動く画像）** が表示 → 画像の読み込み → **ローディング画面が少しずつ消える** → 画像が表示。
+- **作り方の流れ**：① ローディング画面とコンテンツを HTML＋CSS で作成 → ② JSで「ローディングが終わったらローディング画面を消す」指示を書く。
+- **HTML/CSS側**：ローディング画面の `<div>` に **`loading` という ID** を割り振り、`position` プロパティでコンテンツと重ねる。
+- **`inset: 0;`**：`top: 0; right: 0; bottom: 0; left: 0;` をまとめた指定。**`position: fixed;` と組み合わせると要素を画面いっぱいに広げられる**。
+- **JS側のイベント**：ターゲットは画面なので **`window` が一番はじめ** にくる。**画像・音声・動画などすべてのリソースの読み込み完了** には **`load`** を使用。処理が短いので **無名関数**（P.080参照）で書く。
+- **クラスの付与**：CSSに **要素の不透明度を0にして隠すクラス `.loaded`** を用意し、**`classList.add()`** で付与。**クラス名はシングルクォーテーションで囲む**。
+
+```css
+#loading {
+  transition: all 1s;          /* 少しずつ消えるように */
+  background-color: #ddd;
+  position: fixed;
+  z-index: 9999;               /* 最前面へ */
+  inset: 0;                    /* = top/right/bottom/left すべて 0 */
+  display: grid;
+  place-items: center;         /* スピナーを画面中央に */
+}
+.loaded {                      /* ← 読み込み完了後に JS が付与する */
+  opacity: 0;
+  visibility: hidden;
+}
+```
+
+```javascript
+const loading = document.querySelector('#loading');   // 非表示にしたい要素を定数に
+
+window.addEventListener('load', () => {
+  loading.classList.add('loaded');   // 「loading」に「loaded」クラスを追加
+});
+```
+
+- **クラスの削除・複数指定**：削除は **`classList.remove('クラス名')`**。**カンマ区切りで一度に複数のクラスを追加・削除できる**（`add('a', 'b', 'c')`）。
+- POINT：`.loaded` に `opacity: 0` **だけ** だと見えないまま画面上に残り、下のコンテンツがクリックできない。`visibility: hidden` を併記するのがセット（`display: none` だと `transition` が効かない）。
+- POINT：本章の全デモは **リセットCSS `ress.css`** を CDN（`https://unpkg.com/ress/dist/ress.min.css`）で読み込み、ブラウザー間の表示を統一している。→ [filipelinhares/ress](https://github.com/filipelinhares/ress)
+
+#### 4-4〜4-6 ボタンをクリックしてダークモードにしよう（`chapter4/04-demo`）
+- **ダークモード＝画面の背景を黒基調にしたデザイン**。CSSのカスタムプロパティやメディア特性で **OSの設定を判定する方法もある** が、ここでは **ボタンで切り替えるタイプ** を実装。
+- **設計**：CSSに **`dark-theme`**（背景 `#000`／文字色 `#ddd`）を用意し、**この段階ではHTML内のどの要素にも加えない**。ボタンがクリックされたらJSが付与する。
+- **`classList.toggle()`**：クリックのたびに付け外ししたいので `add`／`remove` ではなくこちら。**指定した要素にクラス名が付いていなければ追加、付いていれば削除**。**`<body>` は `document.body` で取得** できる。
+
+| メソッド | 使いどころ |
+|---|---|
+| `classList.add()` / `remove()` | 一方向の状態変化（ローディング終了＝二度と戻らない）／値に応じて毎回決め直す場合 |
+| **`classList.toggle()`** | **クリックのように往復する操作**（`<body class="dark-theme">` ⇔ `<body class="">`） |
+
+- **ボタンのテキストも切り替える（4-6）**：`toggle` だけでは **ラベルが「ダークモードにする」のまま**。要素のテキストは **`textContent`** で挿入でき、条件には **`btn.textContent === 'ダークモードにする'`** を使って現在の表示を評価する（P.086「3-11」の `if / else` を応用）。
+- **進め方のコツ**：**条件を付けるときやコードが長くなりそうなときは、一旦日本語で考え、コメントアウトを使いながら整理してコードを書いていく**。
+
+```javascript
+const btn = document.querySelector('#btn');
+
+btn.addEventListener('click', () => {
+  document.body.classList.toggle('dark-theme');   // 追加と削除を交互に
+
+  // もしボタンのテキストが「ダークモードにする」になっているなら
+  if (btn.textContent === 'ダークモードにする') {
+    btn.textContent = 'ライトモードにする';
+  // そうでないなら（「ライトモードにする」と表示されているなら）
+  } else {
+    btn.textContent = 'ダークモードにする';
+  }
+});
+```
+
+- POINT：`transition: .5s` は **切り替わる要素（`body`）側** に書く。クラスが付いた瞬間に滑らかに変化する（4-2 の `#loading { transition: all 1s; }` と同じ設計）。
+- POINT：「状態」と「その状態を説明するUI表記」は別物。どちらも明示的に更新する必要がある。
+
+#### 4-7〜4-9 入力した文字数を数えてみよう／lengthでカウント／文字数によって表示を変える（`chapter4/07-demo`）
+- **完成イメージ**：100文字以内で入力するよう説明したテキストエリア。入力するたびに文字数が更新され、**100文字より多くなると数字の色が変わる**。
+- **準備**：**文字数を表示したい箇所は `<span>` で囲み `count` という ID を割り振る**。指示に使う要素を定数（`text`／`count`）として用意。
+- **イベント**：「テキストエリアに入力されたら」には **`keyup`**（キーボードで入力したとき、正確には **キーから手が離れたとき**）を使用。
+- **`length`**：**数えたい文字列のあとに `.length` をつなげるだけでOK**。length は英語で「長さ」＝文字列の長さ（文字数）。**すでに入力された値は `要素.value` で取得できる** ので `text.value.length`。`length` は **要素の数を数えるときにも使える**。
+
+```javascript
+'文字列'.length;   // → 3（コンソールで確認できる）
+```
+
+- **サロゲートペア**：**絵文字や一部の漢字は1文字でも2文字とカウントされる**。Unicodeで1文字を2つの文字コードで表す文字（通常「1文字＝2バイト」のところ一部は「1文字＝4バイト」）で、これを **サロゲートペア** と呼ぶ。回避策は **スプレッド演算子**。
+
+```javascript
+'😄'.length;        // → 2（1文字なのに2）
+[...'😄'].length;   // → 1（スプレッド演算子で1文字としてカウント）
+```
+
+- **比較演算子（4-9）**：条件には **算数でもおなじみの不等号** を使う。**`>` は左側が右側よりも大きいかを評価**し、大きければ波カッコ内が実行される。**このように左右を比較する記号を「比較演算子」と言う**。
+
+| 演算子 | 意味 | 演算子 | 意味 |
+|---|---|---|---|
+| `A === B` | AとBが等しいか | `A >= B` | AがB以上か（≧と同じ） |
+| `A > B` | AがBを超えるか | `A <= B` | AがB以下か（≦と同じ） |
+| `A < B` | AがB未満か | `A !== B` | AとBが等しくないか |
+
+- **進め方のコツ**：**「100文字を超えると」という条件式はひとまず置いておき、これまでの学習で書けるところだけ書く**。骨組み（`if` / `classList.add` / `else` / `classList.remove`）を先に組み、最後に条件式 `text.value.length > 100` を埋める。
+
+```javascript
+const text = document.querySelector('#text');    // テキストエリア
+const count = document.querySelector('#count');  // 文字数の表示先
+
+text.addEventListener('keyup', () => {
+  count.textContent = text.value.length;
+
+  // 100文字を超えるなら
+  if (text.value.length > 100) {
+    count.classList.add('alert');       // alert クラスを加える
+  // そうでないなら（100文字以下なら）
+  } else {
+    count.classList.remove('alert');    // alert クラスをはずす
+  }
+});
+```
+
+- POINT：**記号の順序をひっくり返して `=>` や `=<` と書くと演算子として認識されない**（アロー関数の `=>` と紛らわしいので特に注意）。
+- POINT：`#text` は `width: 600px` ＋ `max-width: 100%` の併記。固定幅を基本にしつつ画面が狭いときだけ縮む、レスポンシブの定番パターン。
+- ⚠️ **補足（教材範囲外）**：`keyup` は **キー操作でしか発火しない** ため、右クリック→貼り付けやドラッグ＆ドロップではカウンターが更新されない。値の変化そのものを起点にする **`input`** の方が実務向き。日本語入力（IME）では変換中も発火するため、除外には `event.isComposing` を見る。→ [input event | MDN](https://developer.mozilla.org/en-US/docs/Web/API/Element/input_event)・[keyup event | MDN](https://developer.mozilla.org/en-US/docs/Web/API/Element/keyup_event)
+
+#### 4-10〜4-12 チェックを入れるとボタンを押せるようにしよう／効率のいい書き方（`chapter4/10-demo`）
+- **完成イメージ**：初期状態ではボタンがグレーアウトしてクリックできず、**チェックボックスにチェックを入れるとクリックできる状態になる**（「規約に同意したら送信可」の定番UI）。
+- **HTML/CSS側**：`<input>` の **`type="checkbox"`** でチェックボックスを用意し、ボタンには **`disabled` 属性を付与して無効（押せない状態）** にしておく。CSSでは **疑似クラス `:disabled`** で無効時の背景を薄いグレーに。
+
+```html
+<label><input id="check" type="checkbox"> 利用規約に同意する</label>
+<input id="btn" type="submit" value="送信する" disabled>   <!-- disabled で無効化 -->
+```
+
+- **イベント**：チェックボックスに **変化があったときに発動させるには `change` イベント**。
+- **真偽値（ブール値）**：`console.log(isAgreed.checked)` とすると（**文字列ではないのでクォート不要**）チェック時 `true`／解除時 `false` が表示される。**`true` / `false` は真偽値（ブール値）と呼ばれる特別なデータの型**で、これまで「条件に当てはまる／当てはまらない」と説明してきたものを **当てはまる＝`true`（真）／当てはまらない＝`false`（偽）** と表現する。「はい」か「いいえ」で答えられる質問の返答がこれ。
+- **`disabled` の2つの顔**：
+
+| 場所 | 書き方 | 意味 |
+|---|---|---|
+| HTML（属性） | `<input ... disabled>` | 属性名を書くだけで無効化される |
+| JavaScript（プロパティ） | `btn.disabled = true / false` | `true` で無効、`false` で有効。**読み込み直後は `true`＝無効化が効いている** |
+
+- **`=== true` は省略できる**：if文の条件で「〇〇に当てはまるなら」の意味で使う `=== true` は省略可。`if (isAgreed.checked === true)` ＝ `if (isAgreed.checked)`。
+- **効率のいい書き方（4-12）**：入出力を観察すると **チェックボックスとボタンの無効化の状態は常に逆** になっている。そこで **逆を意味する記号 `!`（論理否定）** を使い、if / else 4行を **1行に集約** できる。
+
+| `isAgreed.checked` | `btn.disabled` |
+|---|---|
+| `true`（チェックされている） | `false`（無効化なし＝押せる） |
+| `false`（チェックなし） | `true`（無効化される） |
+
+```javascript
+const isAgreed = document.querySelector('#check');
+const btn = document.querySelector('#btn');
+
+// if / else 版（4-11）
+isAgreed.addEventListener('change', () => {
+  if (isAgreed.checked) {     // 「=== true」は省略
+    btn.disabled = false;
+  } else {
+    btn.disabled = true;
+  }
+});
+
+// 「!」で1行にまとめた版（4-12・完成形）
+isAgreed.addEventListener('change', () => {
+  btn.disabled = !isAgreed.checked;   // 前に「!」を付けて逆の結果を代入
+});
+```
+
+- **`!` の既習箇所**：4-9 の比較演算子でイコールに付けた **`!==`（等しくない）** として登場済み。ここでは真偽値そのものを反転させる用途。
+- POINT：教材は **「慣れるまでは `if` や `else` を使って書いてもらって問題ない。少しずつより効率よく書く方法がないか考えてみるとよい」** と明言。短縮技を先に覚えるのではなく、**まず動くコードを書き、入出力の法則を見つけてから縮める** という順序が学びの本体。
+- POINT：定数名 `isAgreed`（同意しているか）のように **真偽値は `is〜` / `has〜` で始める** と `if (isAgreed.checked)` が英文としてほぼそのまま読める。
+
+#### 4-13〜4-16 ページのスクロール量を表示しよう（`chapter4/13-demo`）
+- **完成イメージ**：文章がメインの縦長ページの上部に、**スクロール量を表す「プログレスバー」** を設置。ページを開いた時点では何も表示されず、スクロールすると水色のラインが伸び、一番下で右端に到達する。題材は宮沢賢治『銀河鉄道の夜』。
+- **実装のステップ**：3節にまたぐ複雑な作業なので、**最初に実装の過程を整理してから着手** する（各節の見出しにこの番号が再登場する）。
+
+| # | ステップ | 該当節 |
+|---|---|---|
+| 1 | プログレスバーを作成する | 4-14 |
+| 2 | スクロール量を取得する | 4-14 |
+| 3 | ページのサイズを取得する | 4-15 |
+| 4 | スクロールされた割合を計算する | 4-16 |
+| 5 | プログレスバーの幅に設定する | 4-16 |
+
+- **【1】バーを作成**：**`bar` という ID のついた空の `<div>`** を用意。CSSでは水色の背景と `position: fixed;` で画面上部に固定。**現段階では幅の指定がないので何も表示されない**（仮に `width: 100%` を加えると左端から右端まで表示される）。**この幅の値は後ほどJavaScript側で操作するので、今は記述しないでおく** ＝「静的な見た目はCSS、動的に変わる値はJS」という役割分担。
+- **【2】スクロール量**：**`scroll` イベントは画面をスクロールするたびに発生**し、画面に関することなので **`window`** に設定。**処理の指定が少し長くなりそうなので、関数を用意してイベント発生時に呼び出す書き方** にする（無名関数との使い分けは **処理の分量** で判断）。スクロール量は **`window.scrollY`**（ページの一番上から垂直方向に何px スクロールしたか）。**POINT：横方向は `scrollX`**。
+- **【3】ページのサイズ**：ページ全体の高さはすぐ取得できそうだが、**「スクロール可能な高さ」となると計算が必要**。**ページの高さには表示領域（現在表示されている画面）の高さが考慮されていない** ため。
+
+```
+スクロール可能なページの高さ ＝ ページ全体の高さ － 表示領域の高さ
+（例：ページ 2000px、表示領域 800px → 1200px スクロールした時点で一番下に到達）
+```
+
+| 取得したいもの | 書き方 | 補足 |
+|---|---|---|
+| ページ全体の高さ | `document.documentElement.scrollHeight` | **画面に表示されていない伸びた部分も含む**。`document.documentElement` は **ページのルートとなる `<html>` タグの部分** |
+| 表示領域の高さ | `document.documentElement.clientHeight` | **スクロールバーを含まない** 部分の高さ |
+| （POINT）横方向 | `scrollWidth` / `clientWidth` | ページの横幅／表示領域の幅 |
+
+- **【4】割合の計算**：**JavaScriptでは算数や数学で使う四則演算が利用できる**が記号が一部変わる。数値は数値型なので **クォート不要**（P.129「COLUMN 様々なデータの型」）。**数値の計算をするための記号を「算術演算子」と言う**。
+
+| 算術演算子 | 意味 | 例 | 結果 |
+|---|---|---|---|
+| `+` / `-` | 足し算／引き算 | `10 + 3` / `10 - 3` | `13` / `7` |
+| `*` | 掛け算（`×` ではない） | `10 * 3` | `30` |
+| `/` | 割り算（`÷` ではない） | `10 / 3` | `3.3333333333333335` |
+| `%` | 割り算の余りを計算 | `10 % 3` | `1` |
+| `**` | べき乗を計算 | `10 ** 3` | `1000` |
+
+- **優先順位**：算数と同じく **掛け算・割り算が足し算・引き算より優先**。変えたいときは **カッコで囲む**。今回の実装で `(pageHeight - viewHeight)` のカッコが必須な理由に直結する。
+
+```javascript
+console.log(10 + 3 * 2);    // → 16（掛け算が優先。26 ではない）
+console.log((10 + 3) * 2);  // → 26（カッコで優先順位を変える）
+```
+
+- **【5】幅に設定**：計算した割合を **ID `bar` の横幅（`width`）としてスタイルを付与**。**単位の「%」も必要なのでテンプレート文字列で指定** する。
+
+```javascript
+const getScrollPercent = () => {
+  // スクロール量
+  const scrolled = window.scrollY;
+
+  // ページ全体の高さ
+  const pageHeight = document.documentElement.scrollHeight;
+
+  // 表示領域の高さ
+  const viewHeight = document.documentElement.clientHeight;
+
+  // スクロールされた割合（0〜100）
+  const percentage = scrolled / (pageHeight - viewHeight) * 100;
+
+  // プログレスバーに幅を指定（単位の「%」が必要なのでテンプレート文字列で）
+  document.querySelector('#bar').style.width = `${percentage}%`;
+};
+
+window.addEventListener('scroll', getScrollPercent);   // ← 関数名のみ（カッコは付けない）
+```
+
+- POINT：**「まずコンソールに出して確認 → 確認できたら消す／コメントアウトする」** が4回反復される（`'スクロールされました'` → `${scrolled}` → `pageHeight`/`viewHeight` → `percentage`）。**動作確認用の `console.log()` は足場であって成果物ではない**。実測での検算（`5194 - 523 = 4671`）で `scrollHeight - clientHeight` がスクロール量と一致することも確認できる。
+- POINT：**コンソールでメッセージ左横に出る数字はイベントが発生した回数**。少しスクロールしただけで200回超に達し、`scroll` が高頻度で走ることが体感できる（重い処理を書くなら `requestAnimationFrame` などで間引く配慮が必要）。
+- ⚠️ **補足（教材範囲外）**：`%` は「余り」だが正確には **剰余（remainder）でモジュロではない**。符号が常に被除数（左側）と同じになるため `-10 % 3` は `2` ではなく `-1`。正の余りが欲しい場合は `((n % d) + d) % d` と書く。→ [Remainder (%) | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder)
+- ⚠️ **補足（教材範囲外）**：`10 / 3` の結果が `3.3333333333333335` と末尾「5」で終わるのは誤植ではなく **浮動小数点数（IEEE 754 倍精度）の表現限界**。`0.1 + 0.2 !== 0.3` と同根。
+
+#### 第4章で押さえた「型」
+- **イベント処理の共通形**：`要素.addEventListener('イベント名', 処理)` で **「何が」「どうなったら」「どうなるか」** を登録する。処理が短ければ **無名関数**、長くなりそうなら **名前付き関数を定義して参照だけ渡す**（カッコを付けると即実行されてしまう）。
+- **状態の切り替えは3パターン**：`classList.add` / `remove`（一方向・値に従う）／`classList.toggle`（往復）／`要素.プロパティ = 真偽値`（`disabled` など）。
+- **見た目はCSS、切り替えはJS**：クラスや状態を先にCSSで定義しておき、JSはトリガーと切り替えだけを担当する。動的に変わる値（`width` など）だけはCSSに書かず空けておく。
+- **書く前に日本語で整理する**：4-6・4-9・4-11 では日本語の擬似コードを書き、コメントアウトとして残したままコード化。4-13〜4-16 ではさらに大きなスケールで **実装を5ステップに分解してから着手** している。
+
+---
+
 ## フォルダ構成
 
 ```
@@ -313,14 +587,45 @@ javascript-learning/
 │           └── script.js         # 3-2 console.log('準備完了！') → 3-3 querySelector・.value → 3-6 textContent＋テンプレート文字列 → 3-7 const text/color → 3-8 addEventListener('input', colorBg) → 3-9 colorBg 関数定義（完成）
 │   # ※ 3-1 完成形の紹介・3-5 DOMの理解 は概念中心（3-1 は完成コードの先出し）
 │   #   09-demo2 相当（無名関数版）は script.js の別解として本文で紹介
+├── chapter4/                     # 第4章 実践コード（イベント／5つの実装課題）
+│   ├── 02-demo/                  # 4-2〜4-3 ローディング中の画面（load・classList.add）
+│   │   ├── index.html            #   div#loading＋img.spinner ／ div.gallery（画像一覧）
+│   │   ├── css/
+│   │   │   └── style.css         #   #loading(position:fixed・inset:0・z-index:9999・grid中央)・.loaded(opacity:0・visibility:hidden)・.gallery(grid auto-fit)
+│   │   ├── js/
+│   │   │   └── script.js         #   window.addEventListener('load', …) → loading.classList.add('loaded')
+│   │   └── images/               #   loading.png（スピナー）・img1.jpg〜（ギャラリー画像）
+│   ├── 04-demo/                  # 4-4〜4-6 ボタンをクリックしてダークモードに（click・classList.toggle）
+│   │   ├── index.html            #   button#btn＋h1＋p（本文）
+│   │   ├── css/
+│   │   │   └── style.css         #   body(transition:.5s)・.dark-theme(背景#000・文字#ddd)・#btn
+│   │   └── js/
+│   │       └── script.js         #   document.body.classList.toggle('dark-theme') ＋ if/else で btn.textContent を切替
+│   ├── 07-demo/                  # 4-7〜4-9 入力した文字数を数える（keyup・length・比較演算子）
+│   │   ├── index.html            #   textarea#text ／ span#count（文字数の表示先）
+│   │   ├── css/
+│   │   │   └── style.css         #   #text(width:600px＋max-width:100%)・#count・.alert(color:#f66)
+│   │   └── js/
+│   │       └── script.js         #   count.textContent = text.value.length ＋ if(… > 100) で .alert を add/remove
+│   ├── 10-demo/                  # 4-10〜4-12 チェックを入れるとボタンを押せるように（change・真偽値・!）
+│   │   ├── index.html            #   input#check[type=checkbox] ／ input#btn[type=submit][disabled]
+│   │   ├── css/
+│   │   │   └── style.css         #   label(display:block)・#btn・#btn:disabled(background:#ccc)
+│   │   └── js/
+│   │       └── script.js         #   if/else 版 → btn.disabled = !isAgreed.checked（1行に集約した完成形）
+│   └── 13-demo/                  # 4-13〜4-16 ページのスクロール量を表示（scroll・5ステップ実装）
+│       ├── index.html            #   div#bar（空・幅はJSが操作）＋ article（『銀河鉄道の夜』本文）
+│       ├── css/
+│       │   └── style.css         #   #bar(position:fixed・top/left:0・height:10px・width は書かない)・article・h2
+│       └── js/
+│           └── script.js         #   getScrollPercent 関数：scrollY／scrollHeight／clientHeight → percentage → #bar の style.width に代入
+│   # ※ 4-1 イベントの仕組み は概念中心のため独立コードなし
+│   #   デモ番号は各課題の親節に対応（4-2→02、4-4→04、4-7→07、4-10→10、4-13→13）
+│   #   全デモが <head> でリセットCSS ress.css を CDN 読み込み（unpkg.com/ress/dist/ress.min.css）
 └── notes/
-    └── 2026-07-16_19.md          # 第1章（1-1〜1-3）＋第2章（2-1〜2-5）＋第3章（3-1〜3-9）の学習ノート
+    ├── 2026-07-16_19.md          # 第1章（1-1〜1-3）＋第2章（2-1〜2-5）＋第3章（3-1〜3-9）の学習ノート
+    └── 2026-07-21_30.md          # 第4章（4-1〜4-16）の学習ノート
 ```
-
-> 第1章は概念中心のためコードファイルなし（`chapter1/` は作成していません）。
-> `chapter2/` 内のフォルダ名（`03-demo1`／`03-demo2`／`05-demo`）は教材のサンプルデータ名に対応する想定です。`03-` は第2章の3節（2-3）、`05-` は5節（2-5）を指します。実際にコミットした練習ファイルに合わせて適宜調整してください。
-> `chapter3/ColorPicker/` は 3-1〜3-9 を通して1つのカラーピッカーを完成させる構成です（教材のサンプルデータ名は `chapter3/ColorPicker`・`02-demo`〜`09-demo`／`09-demo2`）。各節はこの同一サイトに追記していく形なので、上記では最終的な `script.js` の到達点をコメントで表記しています。
-> ※VSCode／Chrome DevTools のUI・ショートカット・拡張機能名は、書籍（2023年時点）記載のものです。現在の表記と異なる場合があります。
 
 ---
 
@@ -329,5 +634,3 @@ javascript-learning/
 | 著者 | タイトル | 出版社 | 出版年 | ステータス |
 | :--- | :--- | :--- | :--- | :--- |
 | Mana | [1冊ですべて身につくJavaScript入門講座](https://www.sbcr.jp/product/4815615758/) | SBクリエイティブ | 2023年 | 学習中 (In Progress) |
-
-> 前提教材：[1冊ですべて身につくHTML & CSSとWebデザイン入門講座［第2版］](https://www.sbcr.jp/product/4815618469/)（Mana／SBクリエイティブ）。同シリーズのHTML & CSS学習の続きとして本書に進んでいます。
