@@ -25,9 +25,10 @@ JavaScript の学習記録リポジトリです。HTML & CSS 学習（`html-css-
 | 2026-07-21〜30 | 第4章 イベントで操作しよう！4-1〜4-16（5つの実装課題）（イベントの仕組み：登録→監視→検知→呼び出しの4段階・よく使うイベント20種／①ローディング画面：`load`・`classList.add/remove`・`inset: 0`・`opacity`＋`visibility`／②ダークモード：`click`・`classList.toggle`・`document.body`・`textContent`＋`if/else`／③文字数カウンター：`keyup`・`要素.value`・`.length`・サロゲートペア・比較演算子6種／④チェックで有効化：`change`・`要素.checked`・真偽値(true/false)・`disabled`・論理否定`!`／⑤プログレスバー：実装の5ステップ・`window.scrollY`・`scrollHeight`／`clientHeight`・算術演算子6種・`style.width`） | notes/2026-07-21_30(ch04).md ／ chapter4/ |
 | 2026-07-31 | 第5章 複数のデータを使ってみよう！5-1〜5-12（画像一覧ページ制作）（完成形の先出し：JS側にコンテンツを持たせる設計／HTML挿入：`insertAdjacentHTML()`・挿入位置4種・`textContent`との違い・`innerHTML`不使用の理由／配列：`[ ]`・要素・インデックス(0始まり)・`undefined`／繰り返し：`for`文3パート・変数`let`・ループカウンター`i`・`i++`・`lists.length`／変数と定数：再代入・`Uncaught TypeError`・基本は`const`／オブジェクト：`{ }`・プロパティ・キー・値・ドット記法／ブラケット記法／組み合わせ：配列にオブジェクトを入れる・`配列[インデックス].キー`・分割代入`const {name, img, price}`） | notes/2026-07-31(ch05).md ／ chapter5/ |
 | 2026-08-03 | 第6章 アニメーションを加えよう！6-1〜6-16（見出し／画像／スクロール連動のアニメーション制作）（設計思想：動きのメリット3つ・心地よさの条件5つ・イージング／Web Animations API：`animate(キーフレーム, 再生時間)`・自動補完・`opacity`／`translate`／`rotate`／`scale`／`filter`・CSSプロパティのキャメルケース化／オプション：`duration`(必須)・`delay`・`direction`・`easing`・`fill`・`iterations`(`Infinity`)／複数要素：`querySelectorAll()`・NodeList・`for`文・`items[i]`・`delay: i * 300`／スクロール連動：Intersection Observer・4ステップ・`new IntersectionObserver(関数)`・`observe()`・`entries[0].target`・`IntersectionObserverEntry`のプロパティ7種） | notes/2026-08-03(ch06).md ／ chapter6/ |
+| 2026-08-05 | 第7章 Webページを作ってみよう！7-1〜7-15（ファッションサイト「WCB Fashion Collection」制作）（全体像：完成イメージ→実装する4つの動き→ディレクトリー構成・未完成サンプルに追記して完成させる形式／①ローディング画面：`window`＋`load`・`animate(動かす内容, 動きの詳細)`・`delay`で振り付け・`visibility:'hidden'`・`translate:'0 100vh'`で画面外待機・`offset`で変化を後ろに寄せる・配列形式／②画像ギャラリー：`querySelectorAll()`・NodeList・`for`＋`thumbImages[i]`・`mouseover`・イベントオブジェクト`event`・`event.target.src`→`mainImage.src`・`forEach()`への書き換え／③スライドメニュー：`click`・`translate:100vw`・共通オプション`menuOptions`・`forEach((item, index))`＋`delay: 300 * index`・2回目のチラツキを`opacity:[1,0]`で解消／④スクロールで要素を表示：`.fadein`17箇所・`new IntersectionObserver(animateFade)`・`forEach`で1つずつ`observe()`・`entries`/`entry`・`if(entry.isIntersecting)`・`entry.target.animate()`・第二引数`obs`＋`unobserve()`） | notes/2026-08-05_07(ch07).md ／ chapter7/ |
 
 > 第1章はJavaScriptの「全体像」と「使われ方」を学ぶ概念中心の章のため、コードファイルはなし（コーディングは第2章以降）。
-> 章タブ構成は「Introduction｜Getting Started｜Basic｜Event｜Data｜Animation｜Website｜Troubleshooting」の全8章。第1章＝Introduction、第2章＝Getting Started、第3章＝Basic、第4章＝Event、第5章＝Data、第6章＝Animation。
+> 章タブ構成は「Introduction｜Getting Started｜Basic｜Event｜Data｜Animation｜Website｜Troubleshooting」の全8章。第1章＝Introduction、第2章＝Getting Started、第3章＝Basic、第4章＝Event、第5章＝Data、第6章＝Animation、第7章＝Website。
 
 ---
 
@@ -1046,8 +1047,8 @@ kirinObserver.observe(document.querySelector('#kirin'));
 
 - POINT：**6-13で完成コードを先出しし、6-14〜6-16で分解して組み直す**構成。第4章のプログレスバー（4-13〜4-16）と同じ「先に全体、あとから部品」パターン。
 - POINT：「監視ロボット」の比喩は **①動作を決める → ②ロボットに名前をつけて導入 → ③やることを教える → ④監視対象を教えてスイッチを入れる** に対応。特に **②③④が別ステップである（＝`new` した時点ではまだ何も動かない）** ことが理解の分かれ目。
-- POINT：`entries` が **配列なのは「監視対象が複数の場合もあるから」** と明記されている。今回は1つなので `entries[0]` で済むが、複数を監視するなら `forEach` 等になるはず（CHAPTER 7で扱われる見込み）。
-- ⚠️ **補足（教材範囲外）**：MDNによると **`observe()` を呼んだ直後に必ず1回コールバックが発火**し（画面外なら `isIntersecting: false` のエントリーで即座に）、**画面外に出て再び入るたびに再発火**する。これは教材 p.246 の「3つのタイミング」と一致する。裏を返すと **入ったときだけ動かしたいなら `isIntersecting` の判定や `unobserve()` が必要**で、教材のサンプルはそこまで踏み込んでいない（スクロールで往復すると再生が繰り返される）。→ [IntersectionObserver: observe() | MDN](https://developer.mozilla.org/ja/docs/Web/API/IntersectionObserver/observe)
+- POINT：`entries` が **配列なのは「監視対象が複数の場合もあるから」** と明記されている。今回は1つなので `entries[0]` で済むが、複数を監視するなら `forEach` 等になる。→ **第7章 7-13〜7-14 で実際に `entries.forEach((entry) => …)` として回収される**。
+- ⚠️ **補足（教材範囲外）**：MDNによると **`observe()` を呼んだ直後に必ず1回コールバックが発火**し（画面外なら `isIntersecting: false` のエントリーで即座に）、**画面外に出て再び入るたびに再発火**する。これは教材 p.246 の「3つのタイミング」と一致する。裏を返すと **入ったときだけ動かしたいなら `isIntersecting` の判定や `unobserve()` が必要**で、本章のサンプルはそこまで踏み込んでいない（スクロールで往復すると再生が繰り返される）。→ **第7章 7-14・7-15 で教材自身がこの2つを導入する**。→ [IntersectionObserver: observe() | MDN](https://developer.mozilla.org/ja/docs/Web/API/IntersectionObserver/observe)
 - ⚠️ **表記注意**：教材 p.250 の本文は `opacity: [0, 1]` を「**透明から半透明にする**」と説明しているが、`1` は **不透明**（p.213 の本文とも矛盾する）。**「透明から不透明」が正しい**と考えられ、誤植の可能性が高い。
 - ⚠️ **補足（教材範囲外）**：コンソール出力に見える `isVisible` は教材の表に載っていない。MDNでは **`trackVisibility` オプションを有効にしたときに意味を持つ**プロパティで、既定では常に `false`。→ [IntersectionObserverEntry | MDN](https://developer.mozilla.org/ja/docs/Web/API/IntersectionObserverEntry)
 
@@ -1058,6 +1059,221 @@ kirinObserver.observe(document.querySelector('#kirin'));
 - **1要素 → 複数要素 → イベント連動**：6-4〜6-8（1つの見出し）→ 6-9〜6-12（`querySelectorAll()` ＋ `for` 文で6枚の画像）→ 6-13〜6-16（Intersection Observer で発火タイミングを外部化）と、**同じ `animate()` の書き方のまま適用範囲だけを広げていく**。第4章・第5章で身につけた `for` 文・配列・オブジェクト・ドット記法が前提知識としてそのまま効いてくる。
 - **CSSで状態を作り、JSで切り替える**：第4章「静的な見た目はCSS、動的に変わる値はJS」の原則が本章でも一貫。`.img-item { opacity: 0; }`（初期状態）＋ `fill: 'forwards'`（終了状態の保持）、`linear-gradient`（見た目）＋ `backgroundPosition`（動かす値）がその典型。
 - **失敗するコードを先に書かせる**：6-10の `querySelector()`（1つしか動かない）は、第5章の「定数6個→配列」「コピペ6回→for文」と同じ **不便を体験させてから解決策を出す**構成。症状から原因を辿る診断パターンとして残る。
+
+---
+
+### 第7章 Webページを作ってみよう！（章タブ＝Website／ファッションサイト制作）
+
+> 第7章は **第1〜6章の集大成**。ファッションブランドのWebサイト「WCB Fashion Collection」を1ページ通しで作りながら、**①ローディング画面（7-2〜7-4）／②画像ギャラリー（7-5〜7-8）／③スライドメニュー（7-9〜7-11）／④スクロールで要素を表示（7-12〜7-15）** の4つの動きを実装する。**動きのついていない「未完成のサンプルデータ」に、解説を読みながらコードを付け足して完成させる**形式で、各パートとも **「完成コードを先出し → 分解して組み直す」** という第4〜6章と同じ構成をとる。
+
+#### 7-1 作成するWebページの紹介（`chapter7/Fashion`・`01-demo`）
+- **完成イメージ**：**アニメーションとともに画像を大きく打ち出して「見せる」ことにフォーカスしたデザイン**。デスクトップ／モバイルの2サイズが提示される。ヒーローの `WCB Fashion Collection`、Concept、Lookbook（ギャラリー）、Shop（六本木店の情報）という構成。
+- **実装する4つの動き（7-1）**：
+
+| # | 動き | 内容 |
+|---|---|---|
+| ① | ローディング画面 | 「Loading」の文字 → **薄い緑色のスクリーンが上がって** コンテンツが表示 |
+| ② | 画像ギャラリー | サムネイルに **カーソルをあわせると左側に大きく表示**。**カーソルをあわせたときの光るアニメーション** も実装 |
+| ③ | スライドメニュー | 右上のハンバーガーアイコンをクリックすると **右端からメニューパネル**。**各メニューリストは上から順に表示** |
+| ④ | スクロールで要素を表示 | **少しぼやけて透明だった要素が下からふわっと浮かび上がる** |
+
+- **この章のコードはとても長いため全文は掲載できない**とされ、本文に載るのは `<head>` のみ（リセットCSS `ress.css` ／ Google Fonts の `preconnect` 2種＋`Oswald:wght@600&display=swap` ／ 自前CSS ／ `defer` 付きJS ／ SVGファビコン）。
+- **ディレクトリー構成**：`Fashion/` 直下に `index.html`・`js/script.js`・`css/style.css`・`images/`（`bg-hero.jpg`・`bg-shadow.jpg`・`bg-shop.jpg` ほか）。
+- POINT：**章の冒頭で「作る動き」を4つ列挙しておく**ので、以降の節で「今どの機能を作っているのか」を見失わない。4-13〜4-16 の「実装ステップを先に整理する」がページ単位に拡大された形。
+- ⚠️ **補足（教材範囲外）**：`preconnect` が2行あるのは、Google Fonts が **CSS配信の `fonts.googleapis.com`** と **フォント本体配信の `fonts.gstatic.com`** の2ドメイン構成だから。後者だけ `crossorigin` が付くのは、フォントファイルが匿名クロスオリジンで取得されるため。
+
+#### 7-2〜7-4 ローディングから画面遷移（`chapter7/02-demo`）
+- **完成イメージ**：**読込中に真っ白な画面が続くと不安になる**ので、読込中だと認識できるアニメーションを入れる。**「Loading」の文字を出すだけでなく、淡い緑色のスクリーンを下から上に移動させながら、徐々にローディング画面を透明にしてコンテンツをふんわり表示**する。動かす要素は **「Loading...」テキスト／グレーのスクリーン／薄緑のスクリーン」の3つ**。
+- **グレースクリーン（7-3）**：`<body>` の一番上に `loading` という ID の `<div>` を追加し、CSSは `position: fixed` ＋ `inset: 0` ＋ `z-index: 9999` ＋ `display: grid` ＋ `place-items: center`。P.094「4-2」を参考に **`window` の `load` イベント** を用意し、`animate()` に **「動かす内容」と「動きの詳細」をカンマ区切り** で渡す。
+- **`visibility: 'hidden'` を併記する理由**：`opacity: [1, 0]` だけだと見えないまま残ってクリックを遮る。**アニメーション終了時に要素を非表示にしてクリックできない状態にする**ための併記（4-3 の `.loaded` と同じ発想）。
+- **薄緑スクリーン（7-3）**：`#loading` の中に `loading-screen` を追加。**ポイントは `translate` プロパティで縦方向に `100vh` を指定し、画面外の見えない下側に設置しておくこと**。JS側で `['0 100vh', '0 0', '0 -100vh']`（画面外・下 → 画面いっぱい → 画面外・上）と3段階に変化させる。
+- **`delay` で振り付ける**：グレー `delay: 1200`／薄緑 `delay: 800`／テキスト `delay` なし。**1つのタイムラインを3つの `animate()` に分割**しており、グレーの1.2秒は「薄緑の動きが終わってから透明度を変える」ための設定。
+- **`offset` でタイミングを調整（7-4）**：テキストは **表示された瞬間に透明になり始めるため、ユーザーが読まないうちに消えてしまう**。**デフォルトではキーフレームは等間隔で実行されるが、`offset` を指定すると任意のタイミングで実行できる（値は 0.0＝開始 〜 1.0＝終了）**。**オブジェクト形式と配列形式の2通りのうち、タイミングごとの内容が把握しやすい配列形式に書き換えて** から各波カッコに `offset` を足す。POINT：**小数は一の位の `0` を省略して `.8` とも書ける**。
+
+```javascript
+// ローディング部分の最終形（7-2 完成コード）
+const loadingAreaGrey  = document.querySelector('#loading');
+const loadingAreaGreen = document.querySelector('#loading-screen');
+const loadingText      = document.querySelector('#loading p');
+
+window.addEventListener('load', () => {
+  // ローディング中（グレースクリーン）
+  loadingAreaGrey.animate(
+    { opacity: [1, 0], visibility: 'hidden' },
+    { duration: 2000, delay: 1200, easing: 'ease', fill: 'forwards' }
+  );
+
+  // ローディング中（薄緑スクリーン）
+  loadingAreaGreen.animate(
+    { translate: ['0 100vh', '0 0', '0 -100vh'] },   // 下 → 全画面 → 上
+    { duration: 2000, delay: 800, easing: 'ease', fill: 'forwards' }
+  );
+
+  // ローディング中テキスト（配列形式＋offsetで変化を後ろに寄せる）
+  loadingText.animate(
+    [
+      { opacity: 1, offset: .8 },   //80%までは不透明のまま
+      { opacity: 0, offset: 1  },   //100%
+    ],
+    { duration: 1200, easing: 'ease', fill: 'forwards' }
+  );
+});
+```
+
+- POINT：**`duration` を延ばすのと `offset` を後ろへ寄せるのは別物**。前者は「ゆっくり薄くなる」だけで、**読ませたい"止まっている時間"は作れない**。`offset: .8` は `@keyframes` の `0%, 80% { opacity: 1 }` と同じ発想。
+- POINT：`fill: 'forwards'` を3つとも付けているのが重要。これがないと終了と同時に元のCSSの状態に戻り、**ローディングが終わったのに画面が覆われたまま**という事故になる。
+- ⚠️ **補足（教材範囲外）**：`visibility: 'hidden'` を書いても途中で急に消えないのは、MDNによると **visibility は離散的なステップとして補間されるが、イージング関数の 0〜1 の間の値はすべて `visible` になる**ため。**アニメーション中は表示されたままで、終了時に初めて hidden になる**ので `opacity` のフェードを邪魔しない（`display: none` ではこうならない）。→ [visibility | MDN](https://developer.mozilla.org/ja/docs/Web/CSS/visibility)
+- ⚠️ **補足（教材範囲外）**：`offset` の値は **0.0〜1.0（両端を含む）で、昇順に並べる必要がある**。また **CSSの `offset` プロパティを指定したい場合はキーフレームの `offset` と衝突するため `cssOffset` と書く**。→ [Keyframe Formats | MDN](https://developer.mozilla.org/ja/docs/Web/API/Web_Animations_API/Keyframe_Formats)
+
+#### 7-5〜7-8 画像ギャラリー（`chapter7/05-demo`・`08-demo`）
+- **完成イメージ**：**サムネイル画像にカーソルをあわせると、左側の大きな画像が一瞬パッと消えたかと思うと、少しずつ選択した画像が表示されていく**。HTMLは `.gallery-image`（大きい画像1枚）＋ `.gallery-thumbnails`（`<li>` に9枚）。
+- **複数要素の取得（7-6）**：**複数の画像には `querySelector` ではなく `querySelectorAll` を使う**。コンソールでは **`NodeList(9)`** と表示され `length: 9` を確認。**配列で取得されたHTML要素は P.230「6-10」の通り `for` で個別に展開**でき、1つひとつは `thumbImages[i]`。
+- **ホバーで光らせる（7-6）**：`thumbImages[i]` に **`mouseover`**（マウスカーソルが重なった）を指定し、`mainImage.animate({opacity: [0, 1]}, 500)` を実行。**あらかじめ表示されていた大きい画像が一瞬不透明度0（＝透明）になって消えたような状態となり、その後少しずつ不透明に変化していく**＝**パッと光るような印象**になる。**この時点ではどのサムネイルでも左側の画像は同じまま**。
+- **イベントオブジェクト（7-7）**：**`addEventListener()` を使う場合、引数として発生したイベントに関する情報が含まれるオブジェクトが自動的に渡される。これを「イベントオブジェクト」と呼び、慣習的に `event` や `e` という名前がよく使われる**（どんな名前でも動作する）。P.247「6-15」の Intersection Observer と同じ仕組み。
+
+| 段階 | 書き方 | コンソール出力 |
+|---|---|---|
+| ① イベント情報を丸ごと見る | `console.log(event);` | `MouseEvent {isTrusted: true, screenX: …}` |
+| ② イベントを発生させた要素 | `console.log(event.target);` | `<img src="images/img2.jpg" alt>` |
+| ③ その要素の src 属性 | `console.log(event.target.src);` | 画像のファイルパス |
+| ④ 大きい画像に代入 | `mainImage.src = event.target.src;` | ― |
+
+- **属性の書き換え（7-7）**：P.084「3-10」で `HTML要素.style` と書いたのと同じ要領で **`mainImage.src` に代入**すれば完成。
+- **`forEach()` への書き換え（7-8）**：**`forEach()` は for と違い、繰り返し条件や各繰り返し後の処理を指定する必要がなくそのままループできる**ので、**配列処理を効率よく、よりすっきり書ける**。書式は `配列.forEach((各配列の要素) => { … });`。**慣習として配列には複数形、引数には単数形**（`animals` / `animal`、`thumbImages` / `thumbImage`）。**無名関数（アロー関数）だけでなく、関数名をパラメーターに書いて渡すこともできる**（`animals.forEach(showAnimals);`）。
+
+```javascript
+// 7-7 完成形（for 文版）
+const mainImage = document.querySelector('.gallery-image img');
+const thumbImages = document.querySelectorAll('.gallery-thumbnails img');
+
+for(let i = 0; i < thumbImages.length; i++) {
+  thumbImages[i].addEventListener('mouseover', (event) => {
+    mainImage.src = event.target.src;
+    mainImage.animate({opacity: [0, 1]}, 500);
+  });
+}
+
+// 7-8 forEach に書き換えた完成形（動作は同じ）
+thumbImages.forEach((thumbImage) => {
+  thumbImage.addEventListener('mouseover', (event) => {
+    mainImage.src = event.target.src;
+    mainImage.animate({opacity: [0, 1]}, 500);
+  });
+});
+```
+
+- POINT：**書き換えの手順そのものが学び**。いきなり消さず **①for文をコメントアウト → ②`console.log` で出力を照合（`thumbImages[i]` と `thumbImage` で同じものが取れる）→ ③中身を移植** の3段階を踏む。
+- POINT：`opacity: [0, 1]` は「消える」ではなく **「一瞬消してから戻す」**。ローディングの `[1, 0]` と逆向きで、**同じプロパティでも配列の並びを変えるだけで演出の意味が真逆になる**。
+- POINT：`animate({opacity: [0, 1]}, 500)` のように、**タイミングが `duration` だけなら第2引数に数値を直接渡せる**（6-5 の書き方に戻った形）。
+- ⚠️ **補足（教材範囲外）**：`event.target.src` がコンソールでフルパス（`file:///…/img2.jpg`）で出るのは仕様どおりで、**`src` プロパティはベースURIを含む完全なURLを返す**。属性の文字列そのものが欲しい場合は `getAttribute('src')`。→ [HTMLImageElement | MDN](https://developer.mozilla.org/ja/docs/Web/API/HTMLImageElement)
+- ⚠️ **補足（教材範囲外）**：`thumbImages` は教材では「配列」と説明されるが、厳密には **NodeList であって Array ではない**。**`forEach()` は使えるが `map` / `filter` は使えず**、必要なら `Array.from()` や `[...thumbImages]` で変換する。→ [NodeList | MDN](https://developer.mozilla.org/ja/docs/Web/API/NodeList)
+- ⚠️ **補足（教材範囲外）**：`for(let i …)` のコールバック内で `thumbImages[i]` が正しく取れるのは **`let` が繰り返しごとに新しい `i` を作る**から。`var` だと全コールバックが最後の `i` を参照して破綻する。
+
+#### 7-9〜7-11 スライドメニュー（`chapter7/09-demo`）
+- **完成イメージ**：**画面右上のアイコンをクリックすると右端からメニューパネルが表示され、パネル内の各メニューリストは上から順に右側からスッと表示されていく**。
+- **HTMLとCSS（7-10）**：**button 要素で開閉ボタンを設置し、開くボタンに `menu-open`、パネルに `menu-panel`、パネル内の閉じるボタンに `menu-close` という ID を割り振る**。アイコンはインラインSVG（`<title>メニューを開く</title>` 付き）。CSSは **`position: fixed;` で位置を固定させる指定のほか、色や余白などの装飾**。**装飾を確認してから `translate: 100vw;` を追加して、Webページを開いた段階では画面の外側に配置して見えないようにする**という順序で書かれている。
+- **クリックで開閉（7-10）**：まず **`console.log('メニューを開く')` で click が拾えているか確認**してからコメントアウトし、`animate()` に差し替える。**動かす内容は `translate`、開始時は画面外の `'100vw'`、終了時は `0`**。**動きの詳細は閉じるボタンと共通なので、定数 `menuOptions` にまとめる**。閉じる側は **クリック対象が `menuClose` である点、開始時・終了時の値が逆である点** だけが異なる。
+- **リストを1つずつ表示（7-11）**：`#menu-panel li` を `querySelectorAll()` で取得（5件）。CSSに **`.menu-list li { opacity: 0; }` を加えて、何も操作していない状態では透明に**しておき、JSで `opacity: [0, 1]`（透明から不透明）と `translate: ['2rem', 0]`（少し右側から移動）を指定する。
+- **インデックスで遅延させる（7-11）**：**`forEach()` は関数の引数をカンマで区切ることで、2つ目の引数にインデックス（0から始まる番号）が代入される**。`index` という名前は慣習で、**他の名前をつけても動作する**。これを **P.234「6-11」と同じ要領で `delay: 300 * index` に使い**、上の要素から順に表示させる。
+- **2回目のチラツキ（7-11）**：**一度開いたメニューを閉じ、2回目に開くと挙動がおかしい**。**1回目の表示でメニューリストがすでに不透明になっているため、2回目ではすでに表示されていたテキストがパッと消え、再びふわっと表示されるようなチラツキ**が出る。→ **閉じるボタンをクリックしたときにメニューリストを元の透明に戻す指定**を足すと解消。
+
+```javascript
+const menuOpen = document.querySelector('#menu-open');
+const menuClose = document.querySelector('#menu-close');
+const menuPanel = document.querySelector('#menu-panel');
+const menuItems = document.querySelectorAll('#menu-panel li');
+const menuOptions = {              // 開く・閉じるで共通の詳細
+  duration: 1400,
+  easing: 'ease',
+  fill: 'forwards',
+};
+
+// メニューを開く
+menuOpen.addEventListener('click', () => {
+  menuPanel.animate({translate: ['100vw', 0]}, menuOptions);
+
+  // リンクをひとつずつ順に表示
+  menuItems.forEach((menuItem, index) => {      // 第2引数で番号を受け取る
+    menuItem.animate(
+      { opacity: [0, 1], translate: ['2rem', 0] },
+      { duration: 2400, delay: 300 * index, easing: 'ease', fill: 'forwards' }
+    );
+  });
+});
+
+// メニューを閉じる
+menuClose.addEventListener('click', () => {
+  menuPanel.animate({translate: [0, '100vw']}, menuOptions);   // 値が逆
+  menuItems.forEach((menuItem) => {
+    menuItem.animate({opacity: [1, 0]}, menuOptions);          // 元の透明に戻す
+  });
+});
+```
+
+- POINT：**チラツキの正体は `fill: 'forwards'` の副作用**。終了状態が保持されるため閉じた後も li は `opacity: 1` のままで、次に開くと `[0, 1]` の最初のキーフレームで一瞬0に飛ぶ。**アニメーションは状態を書き換える**と意識しないと踏む罠。
+- POINT：直し方が **「CSSに戻す」ではなく「アニメーションで戻す」** なのが面白い。閉じるときにも `animate({opacity: [1, 0]})` を流すことで、**消える演出と次回の初期化を1つの指定で兼ねている**。
+- POINT：**開くときは `index` を使い、閉じるときは使わない**という非対称。現れるときは順番に、消えるときは一斉に、という演出の作り分け。
+- POINT：`menuOptions` に `delay` を含めないのは、li 側の `delay` が要素ごとに違って共通化できないから。**共通化できる部分とできない部分の線引き**がコードに現れている。
+
+#### 7-12〜7-15 スクロールで要素を表示（`chapter7/Fashion`）
+- **完成イメージ**：**スクロールして要素が表示範囲内に入ると、少しぼやけて透明だった要素がふわっと浮かび上がるように表示される**（少しぼけている → ふわっと浮かび上がる → クリアになった）。
+- **クラスを付与する（7-13）**：**HTMLの「ふわっ」と表示させたい要素に `fadein` というクラスを加える**。**見出しや文章、画像など、全部で17箇所に指定**。
+- **Intersection Observer の設定（7-13）**：P.242「6-14」を振り返りながら基本設定を組む。
+
+| ステップ | 内容 | コード |
+|---|---|---|
+| ① | 実行する動作内容を関数で定義する | `const animateFade = () => { console.log('ふわっ'); };` |
+| ② | 監視設定を行う | `const fadeObserver = new IntersectionObserver(animateFade);` |
+| ③ | 監視対象を取得する | `const fadeElements = document.querySelectorAll('.fadein');` |
+| ④ | **`forEach()` で1つずつ監視に登録する** | `fadeElements.forEach((fadeElement) => { fadeObserver.observe(fadeElement); });` |
+
+- **④が第6章との最大の違い**：`fadeObserver.observe(fadeElements);` としたいところだが、**`querySelectorAll()` で取得した複数の要素は配列になっているため、`forEach()` で展開して個別に監視するように指定する必要がある**。7-8 で `forEach` を学んだ意味がここで回収される。
+- **監視対象の情報を取得する（7-14）**：**対象が複数あるので `forEach()` と組み合わせる**。**関数 `animateFade` の丸カッコに `entries` と書き加えると、交差状態の情報が配列で渡される**ので `entries.forEach()` と書き、**その丸カッコの中で監視対象のHTML要素を個別に `entry` という名前で受け取る**。第6章の `entries[0]` が `entries.forEach((entry) => …)` になった形。
+- **交差しているときだけ実行する（7-14）**：**Intersection Observer はページを読み込んだ時点で用意した関数が実行される**。**監視対象が画面に入ったときだけ実行したいので `if (entry.isIntersecting)` を条件にする**と、`true` のときだけ中身が実行される。
+- **アニメーションの指定（7-14）**：CSSで `.fadein { opacity: 0; }` としておき、**取得した要素 `entry.target` に `animate()`** を指定。**動かす内容は「透明から不透明にする」「ぼかしをなくす」「下から上に移動する」、動きの詳細は「2秒かけて動かす」「開始時と終了時は緩やかに変化させる」「最後のキーフレームの状態を保持する」**。
+- **監視を停止する（7-15）**：**交差するたびに関数が実行されるとブラウザーに負荷がかかる。また何度も動きがあるとユーザーが不快に感じることもある**ので、一度表示されたら監視を止める。**`animateFade` は第二引数に実行している `fadeObserver` を渡せる**が、**混乱しないよう定数名を変え、慣例的に observer を短くした `obs` を使う**。**`unobserve()` の丸カッコには監視を止める要素 `entry.target` を記述**。POINT：**`unobserve()` は `fadeObserver.observe(fadeElement);` の逆の意味**。
+
+```javascript
+// 監視対象が範囲内に現れたら実行する動作
+const animateFade = (entries, obs) => {        // 第2引数で observer 自身を受け取る
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {                // 画面内に入ったときだけ
+      entry.target.animate(
+        {
+          opacity: [0, 1],
+          filter: ['blur(.4rem)', 'blur(0)'],   // ぼけ → クリア
+          translate: ['0 4rem', 0],             // 下から浮き上がる
+        },
+        { duration: 2000, easing: 'ease', fill: 'forwards' }
+      );
+      // 一度ふわっと表示されたら監視をやめる
+      obs.unobserve(entry.target);
+    }
+  });
+};
+
+// 監視設定
+const fadeObserver = new IntersectionObserver(animateFade);
+
+// .fadeinを監視するよう指示
+const fadeElements = document.querySelectorAll('.fadein');
+fadeElements.forEach((fadeElement) => {
+  fadeObserver.observe(fadeElement);
+});
+```
+
+- **効果**：**ぱっと見はあまり変化がないように見えるが、ページ下部までスクロールしたあとに上部へ戻ってもアニメーションは発動しなくなる**＝監視が停止している。教材は「**シンプルなプログラムでは違いが出にくいが、`animateFade` を複数の Intersection Observer で利用する場合にどこから呼び出されたかわからなくなることがあるため、第二引数でどの observer を呼び出すのかを指定する**」と説明し、「**見た目だけでなく、効率の良い書き方やブラウザーへの負荷についても考えながらプログラムを書けるようになっていくといい**」で章を締めている。
+- POINT：**第6章の ⚠️ で「入ったときだけ動かしたいなら `isIntersecting` の判定や `unobserve()` が必要」「複数を監視するなら `forEach` になるはず」と書いた予想が、そのまま 7-13〜7-15 で回収された**。教材が意図的に第6章では踏み込まず、実践章で解決している構成。
+- POINT：**`forEach` が2回登場する**が意味は別物。`entries.forEach` は **「今回変化した要素たち」**、`fadeElements.forEach` は **「監視に登録する要素たち」** のループ。
+- ⚠️ **補足（教材範囲外）**：`observe()` に配列を渡せないのは仕様で、**引数は `targetElement`（単数）**。**1つの監視オブジェクトで複数要素を見られるが、登録は1つずつ**。また **`observe()` を呼んだ直後の最初のレンダリングサイクルで必ずコールバックが発火する**ため、`if (entry.isIntersecting)` の判定は必須。→ [IntersectionObserver: observe() | MDN](https://developer.mozilla.org/ja/docs/Web/API/IntersectionObserver/observe)
+
+#### 第7章で押さえた「型」
+- **JSが動く前の初期状態はCSSに書く**：`#loading-screen { translate: 0 100vh; }`（画面外で待機）／`#menu-panel { translate: 100vw; }`／`.menu-list li { opacity: 0; }`／`.fadein { opacity: 0; }` と、4パート中3パートで同じ型が出てくる。第4章「静的な見た目はCSS、動的に変わる値はJS」の総仕上げ。
+- **`animate()` の使い分けが出揃った**：`{opacity: [0,1]}, 500`（最短形）／`{…}, {duration, delay, easing, fill}`（オブジェクト形式）／`[{…, offset}, {…, offset}], {…}`（配列形式）の3通り。**タイミングを細かく制御したいときだけ配列形式にする**という判断基準。
+- **`delay` は「振り付け」の道具**：固定値で前後関係を作る（ローディングの 1200 / 800）／インデックスに掛けて順次表示にする（`300 * index`）の2通りを実践した。
+- **複数要素の扱いが `for` → `forEach` へ更新**：`querySelectorAll()` → `for(let i …)` → `thumbImages[i]`（7-6）から、`forEach((要素) => …)`（7-8）、`forEach((要素, index) => …)`（7-11）、`entries.forEach((entry) => …)`（7-14）へと段階的に移行。**要素の数を気にせず直感的に書ける**のがメリット。
+- **`console.log` は足場であって成果物ではない**：全パートで **「まずコンソールに出して確認 → 確認できたらコメントアウトして本処理に差し替え」** を反復。特に 7-7 の `event` → `event.target` → `event.target.src` は、**知らないAPIの中身を1段ずつ掘る**汎用的な調べ方。
+- **終了状態の後始末を考える**：`fill: 'forwards'` は便利だが状態が残る。**2回目に動かす前提なら初期状態に戻す処理が要る**（7-11）、**一度でよいなら監視自体を止める**（7-15）と、**「動かしたあとどうするか」までが実装の一部**だと学んだ。
 
 ---
 
@@ -1179,11 +1395,28 @@ javascript-learning/
 │   # ※ 6-1〜6-3（実例・効果・心地よさ）と 6-5／6-14 の解説部分は概念中心のため独立コードなし
 │   #   6-5〜6-7 は 04-demo、6-10〜6-11 は 09-demo、6-14〜6-16 は 13-demo の script.js を段階的に更新していく構成
 │   #   6-8・6-12 は「HTMLとオプションは固定し、キーフレームだけ差し替える」練習のため、各デモの差分は js/script.js のみ
+├── chapter7/                     # 第7章 実践コード（Webページ制作／ファッションサイト「WCB Fashion Collection」）
+│   ├── Fashion/                  # 7-1・7-12 完成版（7-2〜7-15 で組み上げるゴール）
+│   │   ├── index.html            #   div#loading(p+div#loading-screen)／nav(button#menu-open・div#menu-panel)／section.hero・.concept・.gallery・.shop ＋ .fadein を17箇所
+│   │   ├── css/
+│   │   │   └── style.css         #   LOADING(#loading・#loading-screen の translate:0 100vh)／GALLERY／SLIDE MENU(#menu-panel の translate:100vw・.menu-list li の opacity:0)／.fadein{opacity:0}／DESKTOP SIZE(@media min-width:800px)
+│   │   ├── js/
+│   │   │   └── script.js         #   ①ローディング（load＋animate×3）／②ギャラリー（forEach＋mouseover＋event.target.src）／③スライドメニュー（click＋menuOptions＋delay:300*index）／④スクロール表示（IntersectionObserver＋isIntersecting＋unobserve）
+│   │   └── images/               #   bg-hero.jpg・bg-shadow.jpg・bg-shop.jpg・concept.jpg・img1.jpg〜img9.jpg・favicon.svg
+│   ├── 01-demo/                  # 7-1 未完成のサンプルデータ（動きのない状態。ここにコードを付け足して完成させる）
+│   ├── 02-demo/                  # 7-2〜7-4 ローディングから画面遷移（グレー／薄緑スクリーン・Loadingテキストのoffset調整）
+│   ├── 05-demo/                  # 7-5〜7-7 画像ギャラリー（querySelectorAll・for文・mouseover・event.target.src）
+│   ├── 08-demo/                  # 7-8 複数要素をforEachで書き換え（for文はコメントアウトして残す）
+│   └── 09-demo/                  # 7-9〜7-11 スライドメニュー（menuOptions・forEachのindex・閉じるときにopacityを戻す）
+│   # ※ 7-1 完成形の紹介・7-13 は概念／設定中心（7-1 は完成コードの先出し）
+│   #   デモ番号は各パートの親節に対応（7-2→02、7-5→05、7-8→08、7-9→09）。7-12〜7-15 は Fashion に直接反映
+│   #   基本のファイル構成（index.html／css/style.css／js/script.js／images/）は全デモ共通で、節ごとに js/script.js と css/style.css が更新されていく
 └── notes/
     ├── 2026-07-16_19(ch01_03).md  # 第1章（1-1〜1-3）＋第2章（2-1〜2-5）＋第3章（3-1〜3-9）の学習ノート
     ├── 2026-07-21_30(ch04).md     # 第4章（4-1〜4-16）の学習ノート
     ├── 2026-07-31(ch05).md        # 第5章（5-1〜5-12）の学習ノート
-    └── 2026-08-03(ch06).md        # 第6章（6-1〜6-16）の学習ノート
+    ├── 2026-08-03(ch06).md        # 第6章（6-1〜6-16）の学習ノート
+    └── 2026-08-05_07(ch07).md     # 第7章（7-1〜7-15）の学習ノート
 ```
 
 ---
@@ -1192,4 +1425,4 @@ javascript-learning/
 
 | 著者 | タイトル | 出版社 | 出版年 | ステータス |
 | :--- | :--- | :--- | :--- | :--- |
-| Mana | [1冊ですべて身につくJavaScript入門講座](https://www.sbcr.jp/product/4815615758/) | SBクリエイティブ | 2023年 | 学習中 (In Progress) |
+| Mana | [1冊ですべて身につくJavaScript入門講座](https://www.sbcr.jp/product/4815615758/) | SBクリエイティブ | 2023年 | 学習完了 |
